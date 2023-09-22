@@ -1,0 +1,70 @@
+/* Define CSS custom properties for colors */
+:root {
+  --background-light: #fff; /* Light mode background color */
+  --background-dark: #333; /* Dark mode background color */
+  --text-light: #333; /* Light mode text color */
+  --text-dark: #fff; /* Dark mode text color */
+  --button-light: #cf22ff; /* Light mode button color */
+  --button-dark: #e64a19; /* Dark mode button color */
+}
+
+/* Container style */
+.game-container {
+  background-color: var(--background-light); /* Use light background by default */
+  color: var(--text-light); /* Use light text color by default */
+  border-radius: 10px; /* Rounded corners */
+  padding: 20px; /* Spacing inside the container */
+  margin: 20px; /* Spacing outside the container */
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Box shadow for depth */
+
+  /* Flexbox for centering content */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+
+  @media (prefers-color-scheme: dark) {
+    /* Switch to dark mode styles when dark mode is preferred */
+    background-color: var(--background-dark);
+    color: var(--text-dark);
+  }
+}
+
+/* Title style */
+.game-title {
+  font-size: 24px;
+  margin-bottom: 10px; /* Spacing below the title */
+}
+
+/* Description style */
+.game-description {
+  font-size: 16px;
+  margin-bottom: 20px; /* Spacing below the description */
+}
+
+/* Button style */
+.game-button {
+  background-color: var(--button-light); /* Use light button color by default */
+  color: var(--text-light); /* Use light text color by default */
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  @media (prefers-color-scheme: dark) {
+    /* Switch to dark button color when dark mode is preferred */
+    background-color: var(--button-dark);
+    color: var(--text-dark);
+  }
+}
+
+.game-button:hover {
+  background-color: #fb7c05; /* Darker orange on hover */
+  @media (prefers-color-scheme: dark) {
+    background-color: #da05fb; /* Dark mode hover color */
+  }
+}
