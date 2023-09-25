@@ -3,10 +3,15 @@ import React, { useState, useEffect } from 'react';
 import './Game.css';
 import House from './House';
 
-const Game = ({ className }) => {
-  const [playerPosition, setPlayerPosition] = useState({ x: 0, y: 0 });
-  const [cameraPosition, setCameraPosition] = useState({ x: 0, y: 0 });
-  const cameraBoundary = { minX: -100, minY: -100, maxX: 100, maxY: 100 };
+const Game = () => {
+  const gameContainerWidth = 800; // Set the width of your game container
+  const gameContainerHeight = 600; // Set the height of your game container
+
+  const [playerPosition, setPlayerPosition] = useState({
+    x: (gameContainerWidth - 40) / 2, // Centered horizontally
+    y: (gameContainerHeight - 40) / 2, // Centered vertically
+  });
+
   const housePositions = [
     { x: 20, y: 20 },
     { x: -50, y: -50 },
@@ -14,46 +19,20 @@ const Game = ({ className }) => {
     // Add more house positions as needed
   ];
 
+  useEffect(() => {
+    checkCollisions();
+  }, [playerPosition]);
+
   const handleKeyPress = (e) => {
     let newX = playerPosition.x;
     let newY = playerPosition.y;
 
-    switch (e.key) {
-      case 'ArrowUp':
-        newY = Math.max(playerPosition.y - 10, cameraBoundary.minY);
-        break;
-      case 'ArrowDown':
-        newY = Math.min(playerPosition.y + 10, cameraBoundary.maxY);
-        break;
-      case 'ArrowLeft':
-        newX = Math.max(playerPosition.x - 10, cameraBoundary.minX);
-        break;
-      case 'ArrowRight':
-        newX = Math.min(playerPosition.x + 10, cameraBoundary.maxX);
-        break;
-      default:
-        break;
-    }
+    if (e.key == ('w' || 'ArrowUp')) { newY -= 10; }
+    if (e.key == ('s' || 'ArrowDown')) { newY += 10; }
+    if (e.key == ('a' || 'ArrowLeft')) { newX -= 10; }
+    if (e.key == ('d' || 'ArrowRight')) { newX += 10; }
 
     setPlayerPosition({ x: newX, y: newY });
-  };
-
-  const updateCameraPosition = () => {
-    // Calculate the desired camera position to focus on the player
-    const desiredCameraX = playerPosition.x - window.innerWidth / 2;
-    const desiredCameraY = playerPosition.y - window.innerHeight / 2;
-
-    // Clamp the camera position within the boundary
-    const cameraX = Math.min(
-      Math.max(desiredCameraX, cameraBoundary.minX),
-      cameraBoundary.maxX - window.innerWidth
-    );
-    const cameraY = Math.min(
-      Math.max(desiredCameraY, cameraBoundary.minY),
-      cameraBoundary.maxY - window.innerHeight
-    );
-
-    setCameraPosition({ x: cameraX, y: cameraY });
   };
 
   const checkCollisions = () => {
@@ -69,18 +48,16 @@ const Game = ({ className }) => {
     });
   };
 
-  useEffect(() => {
-    updateCameraPosition();
-    checkCollisions();
-  }, [playerPosition]);
-
   return (
     <div
-      className={`game-container ${className}`}
+      className="game-container"
       onKeyDown={handleKeyPress}
       tabIndex="0"
       style={{
-        transform: `translate(${-cameraPosition.x}px, ${-cameraPosition.y}px)`,
+        width: `${gameContainerWidth}px`, // Set the width of the game container
+        height: `${gameContainerHeight}px`, // Set the height of the game container
+        overflow: 'hidden', // Hide content outside the game container
+        position: 'relative', // To position houses and player
       }}
     >
       {housePositions.map((position, index) => (
@@ -88,7 +65,10 @@ const Game = ({ className }) => {
       ))}
       <div
         className="player"
-        style={{ top: `${playerPosition.y}px`, left: `${playerPosition.x}px` }}
+        style={{
+          top: `${playerPosition.y}px`,
+          left: `${playerPosition.x}px`,
+        }}
       ></div>
     </div>
   );

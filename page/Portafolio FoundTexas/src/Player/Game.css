@@ -1,25 +1,27 @@
 /* Game.css */
 .game-container {
-    width: 400px; /* Set your game container width */
-    height: 400px; /* Set your game container height */
-    overflow: hidden; /* Hide content outside the container */
-    position: relative; /* Needed for absolute positioning of player */
-    border: 2px solid #000;
-  }
-  
-  .player {
-    width: 40px;
-    height: 40px;
-    background-color: blue;
-    position: absolute;
-  }
+  width: 800px; /* Set the width of your game container */
+  height: 600px; /* Set the height of your game container */
+  overflow: hidden; /* Hide content outside the game container */
+  position: relative; /* To position houses and player */
+  margin: auto; /* Center the game container horizontally and vertically */
+  border: 2px solid #000; /* Add a border for visibility */
+  display: flex; /* Use flexbox for centering */
+  flex-direction: column; /* Center vertically */
+  justify-content: center; /* Center vertically */
+  align-items: center; /* Center horizontally */
+}
 
-  /* Add this to Game.css */
 .house {
-    width: 60px;
-    height: 60px;
-    background-color: red;
-    position: absolute;
-  }
-  
-  
+  width: 60px;
+  height: 60px;
+  background-color: red;
+  position: absolute;
+}
+
+.player {
+  width: 40px;
+  height: 40px;
+  background-color: blue;
+  position: absolute;
+}
