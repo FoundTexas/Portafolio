@@ -1,22 +1,21 @@
-//import './App.css'
+// App.js
+import React from 'react';
+import './App.css';
+import Game from './Player/Game.jsx';
+import GameProject from './game_dev/GameProject.jsx'
 
-export function App({ user }) {
+function App() {
   return (
-    <article>
-      <header>
-        <img alt="avatar" src="https://unavatar.io/reddit/kikobeats" />
-        <div>
-          <strong>{user}</strong>
-        </div>
-      </header>
-      <aside>
-        <button>
-          Follow
-        </button>
-      </aside>
-    </article>
-  )
+    <div className="App">
+      <h1>Top-Down Player Controller with Camera</h1>
+      <Game />
+    </div>
+  );
 }
+
+export default App;
+
+
 
 
 /*import { useState } from 'react'

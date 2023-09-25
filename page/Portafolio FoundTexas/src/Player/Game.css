@@ -1,0 +1,25 @@
+/* Game.css */
+.game-container {
+    width: 400px; /* Set your game container width */
+    height: 400px; /* Set your game container height */
+    overflow: hidden; /* Hide content outside the container */
+    position: relative; /* Needed for absolute positioning of player */
+    border: 2px solid #000;
+  }
+  
+  .player {
+    width: 40px;
+    height: 40px;
+    background-color: blue;
+    position: absolute;
+  }
+
+  /* Add this to Game.css */
+.house {
+    width: 60px;
+    height: 60px;
+    background-color: red;
+    position: absolute;
+  }
+  
+  
