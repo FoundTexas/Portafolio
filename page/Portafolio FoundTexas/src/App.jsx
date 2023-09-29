@@ -2,12 +2,11 @@
 import React from 'react';
 import './App.css';
 import Game from './Player/Game.jsx';
-import GameProject from './game_dev/GameProject.jsx'
 
 function App() {
   return (
     <div className="App">
-      <h1>Top-Down Player Controller with Camera</h1>
+      <h3>Top-Down Player Controller with Camera</h3>
       <Game />
     </div>
   );

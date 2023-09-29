@@ -1,75 +1,144 @@
-// Game.js
 import React, { useState, useEffect } from 'react';
 import './Game.css';
 import House from './House';
+import Player from './Player';
 
 const Game = () => {
-  const gameContainerWidth = 800; // Set the width of your game container
-  const gameContainerHeight = 600; // Set the height of your game container
+  const gameContainerWidth = 800;
+  const gameContainerHeight = 600;
+  const worldBoundX = 400;
+  const worldBoundY = 350;
+  const playerSize = 40;
+  const moveDistance = 10;
+  const camMoveDist = 10;
+
 
   const [playerPosition, setPlayerPosition] = useState({
-    x: (gameContainerWidth - 40) / 2, // Centered horizontally
-    y: (gameContainerHeight - 40) / 2, // Centered vertically
+    x: (gameContainerWidth - playerSize) / 2,
+    y: (gameContainerHeight - playerSize) / 2,
   });
+
+  const [worldPosition, setWorldPosition] = useState({ x: 0, y: 0 });
 
   const housePositions = [
     { x: 20, y: 20 },
     { x: -50, y: -50 },
     { x: 80, y: 80 },
-    // Add more house positions as needed
   ];
 
   useEffect(() => {
-    checkCollisions();
-  }, [playerPosition]);
+    const handleKeyPress = (e) => {
+      let dir = { x: 0, y: 0 };
+      let newWP = { x: worldPosition.x, y: worldPosition.y };
 
-  const handleKeyPress = (e) => {
-    let newX = playerPosition.x;
-    let newY = playerPosition.y;
+      if (e.key === 'w' || e.key === 'ArrowUp') {
+        dir.y -= moveDistance;
+      }
+      if (e.key === 's' || e.key === 'ArrowDown') {
+        dir.y += moveDistance;
+      }
+      if (e.key === 'a' || e.key === 'ArrowLeft') {
+        dir.x -= moveDistance;
+      }
+      if (e.key === 'd' || e.key === 'ArrowRight') {
+        dir.x += moveDistance;
+      }
 
-    if (e.key == ('w' || 'ArrowUp')) { newY -= 10; }
-    if (e.key == ('s' || 'ArrowDown')) { newY += 10; }
-    if (e.key == ('a' || 'ArrowLeft')) { newX -= 10; }
-    if (e.key == ('d' || 'ArrowRight')) { newX += 10; }
+      const newPlayerX = playerPosition.x + dir.x;
+      const newPlayerY = playerPosition.y + dir.y;
 
-    setPlayerPosition({ x: newX, y: newY });
-  };
+      if (checkCollisions(newPlayerX, newPlayerY, newWP)) {
+        setPlayerPosition({ x: newPlayerX, y: newPlayerY });
 
-  const checkCollisions = () => {
+        if (
+          newPlayerX < gameContainerWidth / 4 &&
+          newWP.x > -worldBoundX &&
+          dir.x < 0
+        ) {
+          setWorldPosition((prev) => ({ ...prev, x: newWP.x - camMoveDist }));
+        } else if (
+          newPlayerX > gameContainerWidth - gameContainerWidth / 4 &&
+          newWP.x < worldBoundX &&
+          dir.x > 0
+        ) {
+          setWorldPosition((prev) => ({ ...prev, x: newWP.x + camMoveDist }));
+        }
+
+        if (
+          newPlayerY < gameContainerHeight / 4 &&
+          newWP.y > -worldBoundY &&
+          dir.y < 0
+        ) {
+          setWorldPosition((prev) => ({ ...prev, y: newWP.y - camMoveDist }));
+        } else if (
+          newPlayerY > gameContainerHeight - gameContainerHeight / 4 &&
+          newWP.y < worldBoundY &&
+          dir.y > 0
+        ) {
+          setWorldPosition((prev) => ({ ...prev, y: newWP.y + camMoveDist }));
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyPress);
+    };
+  }, [playerPosition, worldPosition]);
+
+  const checkCollisions = (newPlayerX, newPlayerY, newWP) => {
+    let collided = false;
+
     housePositions.forEach((house) => {
+      const adjustedHouse = { x: house.x - newWP.x, y: house.y - newWP.y };
       if (
-        playerPosition.x + 40 >= house.x &&
-        playerPosition.x <= house.x + 60 &&
-        playerPosition.y + 40 >= house.y &&
-        playerPosition.y <= house.y + 60
+        newPlayerX + playerSize >= adjustedHouse.x &&
+        newPlayerX <= adjustedHouse.x + playerSize + 20 &&
+        newPlayerY + playerSize >= adjustedHouse.y &&
+        newPlayerY <= adjustedHouse.y + playerSize + 20
       ) {
-        console.log('Player collided with a house at', house);
+        console.log('Player collided with a house at', adjustedHouse);
+        collided = true;
       }
     });
+
+    if (
+      newPlayerX < 0 ||
+      newPlayerX > gameContainerWidth - playerSize ||
+      newPlayerY < 0 ||
+      newPlayerY > gameContainerHeight - playerSize
+    ) {
+      collided = true;
+    }
+
+    return !collided;
   };
 
   return (
     <div
       className="game-container"
-      onKeyDown={handleKeyPress}
       tabIndex="0"
       style={{
-        width: `${gameContainerWidth}px`, // Set the width of the game container
-        height: `${gameContainerHeight}px`, // Set the height of the game container
-        overflow: 'hidden', // Hide content outside the game container
-        position: 'relative', // To position houses and player
+        width: `${gameContainerWidth}px`,
+        height: `${gameContainerHeight}px`,
+        overflow: 'hidden',
+        position: 'relative',
       }}
     >
-      {housePositions.map((position, index) => (
-        <House key={index} position={position} />
-      ))}
       <div
-        className="player"
         style={{
-          top: `${playerPosition.y}px`,
-          left: `${playerPosition.x}px`,
+          position: 'absolute',
+          top: `${-worldPosition.y}px`,
+          left: `${-worldPosition.x}px`,
         }}
-      ></div>
+      >
+        {housePositions.map((position, index) => (
+          <House key={index} position={position} />
+        ))}
+      </div>
+
+      <Player position={playerPosition} />
     </div>
   );
 };
