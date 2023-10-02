@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Game.css';
 import House from './House';
 import Player from './Player';
+import Collider from './Collider';
 
 const Game = () => {
   const gameContainerWidth = 800;
@@ -99,6 +100,7 @@ const Game = () => {
         newPlayerY <= adjustedHouse.y + playerSize + 20
       ) {
         console.log('Player collided with a house at', adjustedHouse);
+        //house.props.handleCollision();
         collided = true;
       }
     });
@@ -114,6 +116,8 @@ const Game = () => {
 
     return !collided;
   };
+
+  const playerpos = { x: playerPosition.x - worldPosition.x, y: playerPosition.y - worldPosition.y };
 
   return (
     <div
@@ -134,7 +138,7 @@ const Game = () => {
         }}
       >
         {housePositions.map((position, index) => (
-          <House key={index} position={position} />
+          <House key={index} position={position} player={playerpos}/>
         ))}
       </div>
 
