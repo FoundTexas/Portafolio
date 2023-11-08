@@ -1,27 +1,22 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
-class House extends Component {
-  render() {
-    const { position } = this.props;
-    const { player } = this.props;
-    const { link } = this.link;
+const House = ({ house, player, world }) => {
+  const [adjustedHouse, setadjustedHouse] = useState({ x: house.x, y: house.y });
 
-    const distance = Math.sqrt((position.x - player.x)^2 + (position.y - player.y)^2)
-
-
-    console.log(distance);
-
-    if (distance < 1 ) {
-      window.location.href = 'https://example.com';
+  useEffect(() => {
+    setadjustedHouse({ x: house.x - world.x, y: house.y - world.y });
+    const distance = Math.sqrt(Math.pow(adjustedHouse.x - player.x, 2) + Math.pow(adjustedHouse.y - player.y, 2));
+    if (distance < 0.2) {
+      window.location.href = position.link;
     }
+  }, [player, world]);
 
-    return (
-      <div
-        className="house"
-        style={{ top: `${position.y}px`, left: `${position.x}px` }}
-      ></div>
-    );
-  }
-}
+  return (
+    <div
+      className="house"
+      style={{ top: `${adjustedHouse.y}px`, left: `${adjustedHouse.x}px` }}
+    ></div>
+  );
+};
 
 export default House;

@@ -2,35 +2,31 @@ import React, { useState, useEffect } from 'react';
 import './Game.css';
 import House from './House';
 import Player from './Player';
-import Collider from './Collider';
 
 const Game = () => {
-  const gameContainerWidth = 800;
-  const gameContainerHeight = 600;
-  const worldBoundX = 400;
-  const worldBoundY = 350;
+  const gameContainer = { x: 800, y: 600 };
+  const worldBound = { x: 1600, y: 1200 };
   const playerSize = 40;
   const moveDistance = 10;
   const camMoveDist = 10;
-
-
   const [playerPosition, setPlayerPosition] = useState({
-    x: (gameContainerWidth - playerSize) / 2,
-    y: (gameContainerHeight - playerSize) / 2,
+    x: (gameContainer.x - playerSize) / 2,
+    y: (gameContainer.y - playerSize) / 2,
   });
 
   const [worldPosition, setWorldPosition] = useState({ x: 0, y: 0 });
+  const [canMove, setCanMove] = useState(true);
+
 
   const housePositions = [
-    { x: 20, y: 20 },
-    { x: -50, y: -50 },
-    { x: 80, y: 80 },
+    { x: 20, y: 20, link: 'https://example.com' },
+    { x: 200, y: 20, link: 'https://google.com' },
+    { x: 100, y: 80, link: 'https://twitter.com' },
   ];
 
   useEffect(() => {
     const handleKeyPress = (e) => {
       let dir = { x: 0, y: 0 };
-      let newWP = { x: worldPosition.x, y: worldPosition.y };
 
       if (e.key === 'w' || e.key === 'ArrowUp') {
         dir.y -= moveDistance;
@@ -45,40 +41,14 @@ const Game = () => {
         dir.x += moveDistance;
       }
 
-      const newPlayerX = playerPosition.x + dir.x;
-      const newPlayerY = playerPosition.y + dir.y;
+      const newPlayerpos = { x: playerPosition.x + dir.x, y: playerPosition.y + dir.y };
 
-      if (checkCollisions(newPlayerX, newPlayerY, newWP)) {
-        setPlayerPosition({ x: newPlayerX, y: newPlayerY });
+      console.log(newPlayerpos);
 
-        if (
-          newPlayerX < gameContainerWidth / 4 &&
-          newWP.x > -worldBoundX &&
-          dir.x < 0
-        ) {
-          setWorldPosition((prev) => ({ ...prev, x: newWP.x - camMoveDist }));
-        } else if (
-          newPlayerX > gameContainerWidth - gameContainerWidth / 4 &&
-          newWP.x < worldBoundX &&
-          dir.x > 0
-        ) {
-          setWorldPosition((prev) => ({ ...prev, x: newWP.x + camMoveDist }));
-        }
-
-        if (
-          newPlayerY < gameContainerHeight / 4 &&
-          newWP.y > -worldBoundY &&
-          dir.y < 0
-        ) {
-          setWorldPosition((prev) => ({ ...prev, y: newWP.y - camMoveDist }));
-        } else if (
-          newPlayerY > gameContainerHeight - gameContainerHeight / 4 &&
-          newWP.y < worldBoundY &&
-          dir.y > 0
-        ) {
-          setWorldPosition((prev) => ({ ...prev, y: newWP.y + camMoveDist }));
-        }
+      if (!checkCollisions(newPlayerpos)) {
+        setPlayerPosition(newPlayerpos);
       }
+
     };
 
     document.addEventListener('keydown', handleKeyPress);
@@ -86,46 +56,31 @@ const Game = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, [playerPosition, worldPosition]);
+  }, []);
 
-  const checkCollisions = (newPlayerX, newPlayerY, newWP) => {
-    let collided = false;
-
-    housePositions.forEach((house) => {
-      const adjustedHouse = { x: house.x - newWP.x, y: house.y - newWP.y };
-      if (
-        newPlayerX + playerSize >= adjustedHouse.x &&
-        newPlayerX <= adjustedHouse.x + playerSize + 20 &&
-        newPlayerY + playerSize >= adjustedHouse.y &&
-        newPlayerY <= adjustedHouse.y + playerSize + 20
-      ) {
-        console.log('Player collided with a house at', adjustedHouse);
-        //house.props.handleCollision();
-        collided = true;
-      }
-    });
-
-    if (
-      newPlayerX < 0 ||
-      newPlayerX > gameContainerWidth - playerSize ||
-      newPlayerY < 0 ||
-      newPlayerY > gameContainerHeight - playerSize
-    ) {
-      collided = true;
+  const checkCollisions = (pos) => {
+    if (pos.x < 0) {
+      return true; // Player hit the left boundary
+    } else if (pos.x + playerSize > worldBound.x) {
+      return true; // Player hit the right boundary
+    } else if (pos.y < 0) {
+      return true; // Player hit the top boundary
+    } else if (pos.y + playerSize > worldBound.y) {
+      return true; // Player hit the bottom boundary
     }
 
-    return !collided;
-  };
+    // Check for collisions with houses or other game elements here
 
-  const playerpos = { x: playerPosition.x - worldPosition.x, y: playerPosition.y - worldPosition.y };
+    return false; // No collisions detected
+  };
 
   return (
     <div
       className="game-container"
       tabIndex="0"
       style={{
-        width: `${gameContainerWidth}px`,
-        height: `${gameContainerHeight}px`,
+        width: `${gameContainer.x}px`,
+        height: `${gameContainer.y}px`,
         overflow: 'hidden',
         position: 'relative',
       }}
@@ -137,8 +92,8 @@ const Game = () => {
           left: `${-worldPosition.x}px`,
         }}
       >
-        {housePositions.map((position, index) => (
-          <House key={index} position={position} player={playerpos}/>
+        {housePositions.map((value, index) => (
+          <House key={index} house={value} player={playerPosition} world={worldPosition} />
         ))}
       </div>
 
