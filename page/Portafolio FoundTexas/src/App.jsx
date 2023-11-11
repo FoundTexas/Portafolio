@@ -2,12 +2,14 @@
 import React from 'react';
 import './App.css';
 import Game from './Player/Game.jsx';
+import Timeline from './TimelineComponents/Timeline.jsx';
+
 
 function App() {
   return (
     <div className="App">
       <h3>Top-Down Player Controller with Camera</h3>
-      <Game />
+      <Timeline />
     </div>
   );
 }

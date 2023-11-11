@@ -17,7 +17,6 @@ const Game = () => {
   const [worldPosition, setWorldPosition] = useState({ x: 0, y: 0 });
   const [canMove, setCanMove] = useState(true);
 
-
   const housePositions = [
     { x: 20, y: 20, link: 'https://example.com' },
     { x: 200, y: 20, link: 'https://google.com' },
@@ -41,14 +40,11 @@ const Game = () => {
         dir.x += moveDistance;
       }
 
-      const newPlayerpos = { x: playerPosition.x + dir.x, y: playerPosition.y + dir.y };
+      const newPlayerPos = { x: playerPosition.x + dir.x, y: playerPosition.y + dir.y };
 
-      console.log(newPlayerpos);
-
-      if (!checkCollisions(newPlayerpos)) {
-        setPlayerPosition(newPlayerpos);
+      if (!checkCollisions(newPlayerPos)) {
+        setPlayerPosition(newPlayerPos);
       }
-
     };
 
     document.addEventListener('keydown', handleKeyPress);
@@ -56,7 +52,7 @@ const Game = () => {
     return () => {
       document.removeEventListener('keydown', handleKeyPress);
     };
-  }, []);
+  }, [playerPosition]);
 
   const checkCollisions = (pos) => {
     if (pos.x < 0) {
