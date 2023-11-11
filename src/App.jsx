@@ -1,25 +1,4 @@
-// App.js
-import React from 'react';
-import './App.css';
-import Game from './Player/Game.jsx';
-import Timeline from './TimelineComponents/Timeline.jsx';
-
-
-function App() {
-  return (
-    <div className="App">
-      <h3>Top-Down Player Controller with Camera</h3>
-      <Timeline />
-    </div>
-  );
-}
-
-export default App;
-
-
-
-
-/*import { useState } from 'react'
+import { useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
@@ -53,4 +32,4 @@ function App() {
   )
 }
 
-export default App*/
+export default App
