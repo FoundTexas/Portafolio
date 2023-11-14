@@ -1,0 +1,19 @@
+.app {
+  font-family: 'Arial', sans-serif;
+}
+
+.container {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eeeeee00;
+  overflow: hidden;
+}
+
+.circle {
+  position: fixed;
+}
+
+/* Add any other styling as needed */
