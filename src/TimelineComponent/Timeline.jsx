@@ -1,44 +1,28 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useSpring, animated } from 'react-spring';
-import './Timeline.css';
+import React from 'react';
+import { Parallax, ParallaxLayer } from '@react-spring/parallax'
+import './timeline.css';
 
-function Timeline() {
-  const containerRef = useRef(null);
-  const [scrollPosition, setScrollPosition] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentPosition = containerRef.current.scrollTop;
-      console.log(currentPosition);
-      setScrollPosition(currentPosition);
-    };
-
-    const container = containerRef.current;
-    container.addEventListener('scroll', handleScroll);
-
-    return () => {
-      container.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  const circleSpring = useSpring({
-    width: scrollPosition > 800 ? '900' : `${scrollPosition}px`, // Adjust the maximum size here
-    height: scrollPosition > 800 ? '900' : `${scrollPosition}px`, // Adjust the maximum size here
-    borderRadius: '50%',
-    backgroundColor: 'blue',
-  });
-
+const Timeline = () => {
   return (
-    <div className="app">
-      <div className="container" style={{ overflow: 'auto' }} ref={containerRef}>
-        {/* The container div has a limited height to enable scrolling */}
-        <animated.div className="circle" style={circleSpring} />
-        <div style={{ height: '3000px' }}>
-          {/* Placeholder content to allow scrolling */}
-        </div>
-      </div>
-    </div>
+    <Parallax pages={3} style={{ top: '0', left: '0' }}>
+      <ParallaxLayer offset={0} speed={2.5}>
+        <p>Parallax</p>
+      </ParallaxLayer>
+      <ParallaxLayer offset={2} speed={1}>
+        <p>Parallax2</p>
+      </ParallaxLayer>
+    </Parallax>
   );
-}
+};
 
 export default Timeline;
+
+function MyComponent() {
+  return (
+    <Parallax pages={1} style={{ top: '0', left: '0' }}>
+      <ParallaxLayer offset={0} speed={2.5}>
+        <p>Parallax</p>
+      </ParallaxLayer>
+    </Parallax>
+  )
+}
